@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Data & Analytics News – Omixa{% endblock %}
+{% block description %}Omixa's curated feed of recent, relevant reads on data quality, analytics, AI and data technology.{% endblock %}
+{% block content %}
+
+<section class="section">
+  <div class="news-page-head">
+    <h1>Data &amp; Analytics News</h1>
+    <p>Omixa's curated data intelligence section, recent reads on data quality, analytics, AI and the technology behind them.</p>
+  </div>
+
+  <div class="news-filters" role="tablist" aria-label="Filter news by topic">
+    {% for value, label in categories %}
+      <button type="button"
+              class="news-filter-btn{{ ' active' if value == 'all' }}"
+              data-category="{{ value }}"
+              role="tab"
+              aria-selected="{{ 'true' if value == 'all' else 'false' }}">{{ label }}</button>
+    {% endfor %}
+  </div>
+
+  <div class="news-grid" id="newsGrid" aria-live="polite">
+    <div class="news-state">Loading articles…</div>
+  </div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/news.js') }}" defer></script>
+<script>document.addEventListener('DOMContentLoaded', () => initNewsPage('newsGrid', '.news-filter-btn'));</script>
+{% endblock %}

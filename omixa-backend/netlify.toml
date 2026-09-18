@@ -1,0 +1,22 @@
+# Deploys the API test console only (static/index.html, now served at
+# /console) to Netlify. There's no build step: index.html/script.js/
+# style.css are plain files.
+#
+# The main Omixa site (landing page, /clean workspace, /news) is now
+# server-rendered by Flask (see templates/), so it can't be deployed
+# to Netlify the same way — deploy the whole app (this backend +
+# those pages) to Render/Railway instead (see the Procfile and
+# README). This Netlify config is only useful if you want the
+# standalone API test console hosted separately from the backend.
+#
+# The backend (Flask + pandas) is NOT deployable to Netlify — Netlify
+# only runs static sites and short-lived serverless functions, and
+# this backend keeps job state on disk across the upload -> process ->
+# download requests, which doesn't fit that model. Deploy the backend
+# to Render/Railway (see the Procfile and README), then point
+# static/config.js at that backend's URL before deploying this to
+# Netlify.
+
+[build]
+  publish = "static"
+  command = ""

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Omixa – Clean and Standardize Your CSV & Excel Data{% endblock %}
+{% block description %}Omixa finds and fixes messy data, duplicates, missing values, inconsistent formatting, in your CSV and Excel files, then gives you a clean file and a real data-quality report.{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <h1>Messy spreadsheet in. Clean, trustworthy data out.</h1>
+  <p class="lead">Omixa finds and fixes duplicates, missing values and inconsistent formatting in your CSV and Excel files, so you can start analyzing instead of scrubbing.</p>
+  <div class="hero-actions">
+    <a class="btn btn-primary btn-lg" href="{{ url_for('workspace.index') }}">Get Started, it's free</a>
+  </div>
+</section>
+
+<section class="section" id="how-it-works">
+  <div class="section-head">
+    <h2>How it works</h2>
+    <p>From messy file to clean dataset in a few minutes, no spreadsheet gymnastics required.</p>
+  </div>
+  <div class="steps-flow">
+    <div class="step-flow-item"><div class="num">1</div><strong>Upload</strong><p class="small">Drag in a CSV or Excel file.</p></div>
+    <div class="step-flow-item"><div class="num">2</div><strong>Review</strong><p class="small">Omixa scans it and shows what's wrong.</p></div>
+    <div class="step-flow-item"><div class="num">3</div><strong>Clean</strong><p class="small">Choose which fixes to apply, or accept the recommended set.</p></div>
+    <div class="step-flow-item"><div class="num">4</div><strong>Download</strong><p class="small">Get the cleaned file and a data-quality report.</p></div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="section-head">
+    <h2>What Omixa cleans up</h2>
+    <p>A lot of people have data, but that data isn't always ready to use. Omixa handles the tedious part.</p>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card"><div class="icon">🧹</div><h3>Duplicates &amp; missing values</h3><p>Finds duplicate rows and gaps in your data, and fills or flags them sensibly.</p></div>
+    <div class="feature-card"><div class="icon">🔤</div><h3>Formatting &amp; standardization</h3><p>Normalizes dates, phone numbers, genders, countries, booleans and more.</p></div>
+    <div class="feature-card"><div class="icon">📊</div><h3>A real quality report</h3><p>See a before/after quality score and exactly what changed, column by column.</p></div>
+    <div class="feature-card"><div class="icon">🔒</div><h3>Built to be trustworthy</h3><p>No account, no data sharing, your file is deleted right after you download the cleaned version.</p></div>
+    <div class="feature-card"><div class="icon">⚡</div><h3>Fast, no spreadsheet skills needed</h3><p>Built for researchers, students and analysts who just need clean data, quickly.</p></div>
+  </div>
+</section>
+
+<section class="section" style="text-align:center;">
+  <h2>Ready to clean your first dataset?</h2>
+  <p>Free to start. No credit card required.</p>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('workspace.index') }}">+ Clean New Dataset</a>
+</section>
+
+<div class="marketing-footer">Omixa, Trustworthy · Innovative · Professional</div>
+{% endblock %}

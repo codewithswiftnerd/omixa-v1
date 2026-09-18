@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Clean a dataset, Omixa{% endblock %}
+{% block content %}
+
+<div class="flex-between" style="margin-bottom:20px;">
+  <div>
+    <h1 class="mt-0" style="font-size:1.6rem;">Cleaning workspace</h1>
+    <p class="mt-0 mb-0">Upload a CSV or Excel file, review what's wrong, then choose which fixes to run.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="drop dropzone" id="drop" role="button" tabindex="0">
+    <div class="dz-icon">📤</div>
+    <p class="dz-title">Drop a file here, or click to browse</p>
+    <p class="dz-sub">.csv · .xlsx · .xls, up to 25MB</p>
+    <div id="fileName" class="file-chip"></div>
+  </div>
+  <label for="fileInput" class="sr-only">Choose a CSV or Excel file to clean</label>
+  <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" class="hidden">
+
+  <label class="rule" style="margin-top:10px;">
+    <input type="checkbox" id="hasHeaderCheck" checked>
+    <span><strong>My first row is a header</strong><br><em class="small text-muted">uncheck this if row 1 is already data, Omixa won't guess either way</em></span>
+  </label>
+
+  <div class="stepper" id="steps" aria-label="Progress">
+    <div class="step" data-step="upload"><span class="dot">1</span>Upload</div>
+    <div class="step" data-step="review"><span class="dot">2</span>Review</div>
+    <div class="step" data-step="clean"><span class="dot">3</span>Clean</div>
+    <div class="step" data-step="download"><span class="dot">4</span>Download</div>
+  </div>
+
+  <section class="hidden" id="reportCard" style="margin-bottom:20px;">
+    <div class="flex-between" style="align-items:flex-start; margin-bottom:14px;">
+      <div class="score-badge" id="scoreBadge"><span id="scoreNum">-</span></div>
+      <div style="flex:1;">
+        <h3 class="mt-0" style="margin-bottom:2px;">Data quality report</h3>
+        <p class="small text-muted mt-0 mb-0" id="reportSub"></p>
+      </div>
+    </div>
+    <div id="findings"></div>
+    <p class="hint" id="noFindings" style="display:none;">No issues found. This file looks clean already.</p>
+  </section>
+
+  <section class="hidden" id="recommendationsCard" style="margin-bottom:20px;">
+    <h3>Recommendations</h3>
+    <p class="hint" id="recHint">Based on the issues found in your file, here's what Omixa suggests.</p>
+
+    <div id="recSafeGroup">
+      <p class="small" style="font-weight:700; color:var(--success);">✅ Safe to auto-fix</p>
+      <div id="recSafeList"></div>
+      <p class="hint" id="recSafeEmpty" style="display:none;">No auto-fixable issues detected.</p>
+    </div>
+
+    <div id="recAmbiguousGroup">
+      <p class="small" style="font-weight:700; color:var(--warning);">⚠️ Needs your review (not auto-fixed)</p>
+      <div id="recAmbiguousList"></div>
+      <p class="hint" id="recAmbiguousEmpty" style="display:none;">Nothing flagged for manual review.</p>
+    </div>
+  </section>
+
+  <fieldset class="rules">
+    <legend class="rules-legend">Cleaning rules to run</legend>
+    <div class="rules-grid">
+      <label class="rule"><input type="checkbox" value="column_names" checked><span><strong>Clean column names</strong><br><em class="small text-muted">tidies headers into a consistent snake_case</em></span></label>
+      <label class="rule"><input type="checkbox" value="formatting" checked><span><strong>Fix formatting</strong><br><em class="small text-muted">trims stray spaces, tidies whitespace</em></span></label>
+      <label class="rule"><input type="checkbox" value="missing_token_normalization" checked><span><strong>Recognize blank/N-A style values</strong><br><em class="small text-muted">treats "N/A", "null", "-", etc. as missing</em></span></label>
+      <label class="rule"><input type="checkbox" value="numeric_text_cleaning" checked><span><strong>Clean numeric text</strong><br><em class="small text-muted">strips $, commas, % from numbers stored as text</em></span></label>
+      <label class="rule"><input type="checkbox" value="gender_standardization" checked><span><strong>Standardize gender</strong><br><em class="small text-muted">MALE/Male/M → male, FEMALE/Female/F → female</em></span></label>
+      <label class="rule"><input type="checkbox" value="country_standardization" checked><span><strong>Standardize countries</strong><br><em class="small text-muted">NG/nigeria → Nigeria, KE → Kenya, etc.</em></span></label>
+      <label class="rule"><input type="checkbox" value="boolean_standardization" checked><span><strong>Standardize booleans</strong><br><em class="small text-muted">Yes/No, True/False, Y/N, 1/0 → true/false</em></span></label>
+      <label class="rule"><input type="checkbox" value="categorical_standardization" checked><span><strong>Standardize categories</strong><br><em class="small text-muted">merges "Male"/"MALE"/"male"-style variants</em></span></label>
+      <label class="rule"><input type="checkbox" value="email_cleaning" checked><span><strong>Clean emails</strong><br><em class="small text-muted">trims whitespace, lowercases addresses</em></span></label>
+      <label class="rule"><input type="checkbox" value="phone_cleaning" checked><span><strong>Clean phone formatting</strong><br><em class="small text-muted">strips spaces/brackets/hyphens/dots</em></span></label>
+      <label class="rule"><input type="checkbox" value="date_standardization" checked><span><strong>Standardize dates</strong><br><em class="small text-muted">unambiguous dates → YYYY-MM-DD</em></span></label>
+      <label class="rule"><input type="checkbox" value="missing_values" checked><span><strong>Fill gaps</strong><br><em class="small text-muted">median for numbers, "Unknown" for text</em></span></label>
+      <label class="rule"><input type="checkbox" value="duplicates" checked><span><strong>Remove duplicates</strong><br><em class="small text-muted">keeps the first occurrence</em></span></label>
+    </div>
+  </fieldset>
+
+  <div class="footer-actions">
+    <button id="runBtn" class="btn btn-primary" disabled>Clean my data</button>
+    <button class="btn btn-secondary hidden" id="downloadBtn">Download Cleaned File</button>
+    <button class="btn btn-ghost hidden" id="resetBtn">Clean Another Dataset</button>
+  </div>
+  <div class="stage" id="stage" role="status" aria-live="polite"></div>
+</div>
+
+<section class="card hidden" id="results" aria-labelledby="resultsHeading" style="margin-top:20px;">
+  <h2 id="resultsHeading">Cleaning results</h2>
+  <div class="stats" id="stats"></div>
+  <div id="detailBlocks"></div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/config.js') }}"></script>
+<script src="{{ url_for('static', filename='js/clean.js') }}"></script>
+{% endblock %}
